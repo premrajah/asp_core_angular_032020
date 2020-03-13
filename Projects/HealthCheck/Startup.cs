@@ -26,6 +26,9 @@ namespace HealthCheck
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            // Add health checks middleware
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,12 +59,18 @@ namespace HealthCheck
                         Configuration["StaticFiles:Headers:Expires"];
                 }
             });
+
+
             if (!env.IsDevelopment())
             {
                 app.UseSpaStaticFiles();
+
             }
 
             app.UseRouting();
+
+            // health checks before end points
+            app.UseHealthChecks("/hc");
 
             app.UseEndpoints(endpoints =>
             {
